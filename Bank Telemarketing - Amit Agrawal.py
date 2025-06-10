@@ -200,17 +200,38 @@ model.coef_
 
 predictions = model.predict(x_test_data)
 
-# Measure performance
+# Function to calculate and display all performance metrics
+def evaluate_model_performance(y_true, y_pred, model_name):
+    print(f"\n{'-'*20} {model_name} Performance Metrics {'-'*20}")
+    
+    # Classification report
+    print("\nClassification Report:")
+    print(classification_report(y_true, y_pred))
+    
+    # Confusion matrix
+    cm = confusion_matrix(y_true, y_pred)
+    print("\nConfusion Matrix:")
+    print(cm)
+    
+    # Individual metrics
+    accuracy = accuracy_score(y_true, y_pred)
+    balanced_acc = balanced_accuracy_score(y_true, y_pred)
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    auc = roc_auc_score(y_true, y_pred)
+    f1 = f1_score(y_true, y_pred)
+    
+    print(f"\nAccuracy: {accuracy:.4f}")
+    print(f"Balanced Accuracy: {balanced_acc:.4f}")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"ROC AUC: {auc:.4f}")
+    print(f"F1 Score: {f1:.4f}")
+    
+    return accuracy, balanced_acc, precision, recall, auc, f1
 
-print(classification_report(y_test_data, predictions))
-print(confusion_matrix(y_test_data, predictions))
-print(confusion_matrix)
-accuracy_score(y_test_data, predictions)
-balanced_accuracy_score(y_test_data, predictions)
-precision_score(y_test_data, predictions)
-recall_score(y_test_data, predictions)
-roc_auc_score(y_test_data, predictions)
-f1_score(y_test_data, predictions)
+# Measure performance
+logistic_metrics = evaluate_model_performance(y_test_data, predictions, "Logistic Regression")
 
 fpr, tpr, _ = metrics.roc_curve(y_test_data,  predictions)
 auc = metrics.roc_auc_score(y_test_data, predictions)
@@ -311,11 +332,15 @@ sn.barplot(x=round(featureImportances,4), y=featureImportances)
 plt.xlabel('Features Importance')
 plt.show()
 
-# measure performance
+# Measure performance
+rf_metrics = evaluate_model_performance(y_test_data, y_pred, "Random Forest (Top 6 Features)")
 
-accuracy_score(y_test_data, y_pred)
-balanced_accuracy_score(y_test_data, y_pred)
-precision_score(y_test_data, y_pred)
-recall_score(y_test_data, y_pred)
-f1_score(y_test_data, y_pred)
-roc_auc_score(y_test_data, y_pred)
+# Compare models
+print(f"\n{'-'*20} Model Comparison {'-'*20}")
+print(f"{'Metric':<20} {'Logistic Regression':<20} {'Random Forest':<20}")
+print(f"{'Accuracy':<20} {logistic_metrics[0]:<20.4f} {rf_metrics[0]:<20.4f}")
+print(f"{'Balanced Accuracy':<20} {logistic_metrics[1]:<20.4f} {rf_metrics[1]:<20.4f}")
+print(f"{'Precision':<20} {logistic_metrics[2]:<20.4f} {rf_metrics[2]:<20.4f}")
+print(f"{'Recall':<20} {logistic_metrics[3]:<20.4f} {rf_metrics[3]:<20.4f}")
+print(f"{'ROC AUC':<20} {logistic_metrics[4]:<20.4f} {rf_metrics[4]:<20.4f}")
+print(f"{'F1 Score':<20} {logistic_metrics[5]:<20.4f} {rf_metrics[5]:<20.4f}")
