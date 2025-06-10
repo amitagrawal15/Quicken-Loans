@@ -26,7 +26,27 @@ from sklearn.ensemble import RandomForestClassifier
 # Import the raw data
 # =============================================================================
 
-raw_data = pd.read_excel(r'C:\Users\Amit Agrawal\Dropbox\QL Case Study\bank-additional-full.xlsx')
+import os
+import argparse
+from pathlib import Path
+
+# Set up argument parser to allow the file path to be passed as a parameter
+parser = argparse.ArgumentParser(description='Bank Telemarketing Analysis')
+parser.add_argument('--data_file', type=str, default='bank-additional-full.xlsx',
+                    help='Path to the Excel data file (default: bank-additional-full.xlsx in the current directory)')
+args = parser.parse_args()
+
+# Use the provided path or default to a file in the current directory
+data_file_path = args.data_file
+
+# Check if the file exists
+if not os.path.exists(data_file_path):
+    print(f"File not found: {data_file_path}")
+    print("Please provide a valid file path using the --data_file argument")
+    exit(1)
+
+# Read the data file
+raw_data = pd.read_excel(data_file_path)
 raw_data.info()
 
 # Rename fields
